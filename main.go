@@ -38,6 +38,14 @@ func searchHandler(newsapi *news.Client)gin.HandlerFunc {
 
 		fmt.Println(searchQuery)
 		fmt.Println(page)
+
+		results, err := newsapi.FetchEverthing(searchQuery, page)
+		if err != nil {
+			http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		fmt.Printf("%+v", results)
 	}
 }
 
@@ -80,7 +88,7 @@ func main() {
 	}
 
 	myClient := &http.Client{Timeout: 10 * time.Second}
-	newsapi := news.NewClient(myClient, apikey, 20)
+	newsapi := news.NewClient(myClient, apiKey, 20)
 
 	// Again for checking some things out
 	r.GET("/ping", func(c *gin.Context) {
